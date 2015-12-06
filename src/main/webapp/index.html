@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
+</head>
+<body>
+GASDGSADGASD
+<button id="button" name="TEST">TEST</button>
+<button id="button2" onclick="getMazeData()" name="TEST">TEST</button>
+<p id="width"></p>
+
+<p id="height"></p>
+<canvas id="maze"></canvas>
+
+<script>
+    jQuery(document).ready(function ($) {
+        $("#button").click(function () {
+            searchAjax();
+        })
+    });
+
+    //
+    //    function searchAjax() {
+    //        var data = {};
+    //        data["query"] = $("#query").val();
+    //
+    //        $.ajax({
+    //            type : "GET",
+    //            contentType : "application/json",
+    //            url : "/test",
+    //            data : JSON.stringify(data),
+    //            dataType : 'json',
+    //            timeout : 100000,
+    //            success : function(data) {
+    //                console.log("SUCCESS: ", data);
+    //                maze_data = data;
+    //            },
+    //            error : function(e) {
+    //                console.log("ERROR: ", e);
+    //            },
+    //            done : function(e) {
+    //                console.log("DONE");
+    //            }
+    //        });
+    //    }
+
+    function getMazeData(){
+        $.getJSON("/test", function (data) {
+            console.log(data);
+            draw_maze(data);
+        });
+    }
+
+    function draw_maze(maze_data) {
+//        var maze = document.getElementById("maze");
+//        var maze_context = maze.getContext("2d");
+//        searchAjax();
+        var width = maze_data.maze.length;
+        var height = maze_data.maze[0].length;
+        document.getElementById("width").innerHTML = width;
+        document.getElementById("height").innerHTML = height;
+    }
+
+</script>
+</body>
+</html>
