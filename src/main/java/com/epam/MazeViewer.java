@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.List;
 
 public class MazeViewer {
-    public static final int CHARS_FREQUENCY_RATE = 40;
+    public static final int CHARS_FREQUENCY_RATE = 30;
     public static final int IMAGE_SIZE_SCALE = 15;
 
     private BufferedImage bufferedImage;
@@ -19,11 +19,11 @@ public class MazeViewer {
     private final int x;
     private final int y;
     private final int[][] maze;
-    private LinkedList<Integer[]> resolvePath;
+    private LinkedList<Coordinates> resolvePath;
 
     private static final Random rand = new Random();
 
-    public MazeViewer(int[][] maze, LinkedList<Integer[]> resolvePath) {
+    public MazeViewer(int[][] maze, LinkedList<Coordinates> resolvePath) {
         this.x = maze.length;
         this.y = maze[0].length;
         this.maze = maze;
@@ -70,9 +70,9 @@ public class MazeViewer {
     }
 
     public void drawResolve() {
-        for (Integer[] coordinates : resolvePath) {
-            int curX = coordinates[0] * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
-            int curY = coordinates[1] * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
+        for (Coordinates coordinates : resolvePath) {
+            int curX = coordinates.getX() * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
+            int curY = coordinates.getY() * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
             int size = IMAGE_SIZE_SCALE / 2;
 
             g2d.setColor(Color.BLUE);
@@ -81,7 +81,7 @@ public class MazeViewer {
     }
 
     public void drawWord(String word) {
-        LinkedList<Integer[]> fakeCharsCoordinates = new LinkedList<>();
+        LinkedHashSet<Coordinates> fakeCharsCoordinates = new LinkedHashSet<>();
         int currentIndex = 0;
         char[] chars = word.toCharArray();
 
@@ -95,9 +95,9 @@ public class MazeViewer {
 
         for (char curChar : chars) {
             currentIndex += step;
-            Integer[] coordinates = resolvePath.get(currentIndex);
-            int curX = coordinates[0] * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
-            int curY = coordinates[1] * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE - 2;
+            Coordinates coordinates = resolvePath.get(currentIndex);
+            int curX = coordinates.getX() * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
+            int curY = coordinates.getY() * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE - 2;
 
             g2d.setColor(Color.BLACK);
             g2d.drawString(String.valueOf(curChar).toUpperCase(), curX, curY);
@@ -113,28 +113,15 @@ public class MazeViewer {
             int cx = rand.nextInt(x);
             int cy = rand.nextInt(y);
 
-            Integer[] currentCoordinates = new Integer[]{cx, cy};
+            Coordinates currentCoordinates = new Coordinates(cx, cy);
 
             int curX = cx * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
             int curY = cy * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE - 2;
 
-            for (Integer[] coordinate : resolvePath) {
-                if (Arrays.equals(coordinate, currentCoordinates)) {
-                    doNotDraw = true;
-                    break;
-                }
-            }
 
-            for (Integer[] coordinate : fakeCharsCoordinates) {
-                if (Arrays.equals(coordinate, currentCoordinates)) {
-                    doNotDraw = true;
-                    break;
-                }
-            }
-
-            if (!doNotDraw) {
-                g2d.drawString(String.valueOf(c).toUpperCase(), curX, curY);
+            if (!resolvePath.contains(currentCoordinates) && !fakeCharsCoordinates.contains(currentCoordinates)){
                 fakeCharsCoordinates.add(currentCoordinates);
+                g2d.drawString(String.valueOf(c).toUpperCase(), curX, curY);
             }
         }
 

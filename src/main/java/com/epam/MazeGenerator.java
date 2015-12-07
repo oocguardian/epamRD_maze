@@ -1,18 +1,19 @@
 package com.epam;
 
+import java.awt.*;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.*;
 
 public class MazeGenerator {
-
     private final int x;
     private final int y;
     private final int[][] maze;
     private boolean[][] visited;
     private boolean done;
-    private LinkedList<Integer[]> resolvePath = new LinkedList<>();
+
+    private int endX;
+    private int endY;
+    private LinkedList<Coordinates> resolvePath = new LinkedList<>();
 
     public MazeGenerator(int x, int y) {
         this.x = x;
@@ -59,17 +60,25 @@ public class MazeGenerator {
         }
     }
 
+    public LinkedList<Coordinates> solve(int startX, int startY, int endX, int endY) {
+        this.endX = endX;
+        this.endY = endY;
+        solve(startX, startY);
+        return resolvePath;
+    }
+
     private void solve(int startX, int startY) {
         if (startX == x + 1 || startY == y + 1) return;
         if (done || visited[startX][startY]) return;
+
         visited[startX][startY] = true;
 
         // add path point to solve array
-        Integer[] coordinates = {startX, startY};
+        Coordinates coordinates = new Coordinates(startX, startY);
         resolvePath.addLast(coordinates);
 
         // reached end
-        if (x - 1 == startX && y - 1 == startY) done = true;
+        if (endX - 1 == startX && endY - 1 == startY) done = true;
 
         if ((maze[startX][startY] & 1) != 0) solve(startX, startY - 1);
         if ((maze[startX][startY] & 4) != 0) solve(startX + 1, startY);
@@ -111,15 +120,54 @@ public class MazeGenerator {
         return maze;
     }
 
-    public LinkedList<Integer[]> getResolvePath() {
+    public LinkedList<Coordinates> getResolvePath() {
         return resolvePath;
     }
+
+    public Map<Coordinates, String> getCharsToDraw(String word, LinkedList<Coordinates> resolve, int charDistance) {
+        int currentIndex = 0;
+        Random rand = new Random();
+        HashMap<Coordinates, String> charsToDraw = new LinkedHashMap<>();
+
+        char[] chars = word.toCharArray();
+
+        //distance between characters on the resolve path
+        int step = resolve.size() / (word.length() + 1);
+
+        for (char curChar : chars) {
+            currentIndex += step;
+
+            Coordinates coordinates = resolve.get(currentIndex);
+            charsToDraw.put(coordinates, String.valueOf(curChar).toUpperCase());
+        }
+
+        //getting counter of fake chars
+        int randomCharsCount = x * y / charDistance;
+
+        for (int i = 0; i < randomCharsCount; i++) {
+
+            //create random char
+            char c = (char) (65 + rand.nextInt(25));
+
+            int cx = rand.nextInt(x);
+            int cy = rand.nextInt(y);
+
+            Coordinates currentCoordinates = new Coordinates(cx, cy);
+
+            if (!resolvePath.contains(currentCoordinates) && !charsToDraw.keySet().contains(currentCoordinates))
+                charsToDraw.put(currentCoordinates, String.valueOf(c).toUpperCase());
+        }
+        return charsToDraw;
+    }
+
 
     public static void main(String[] args) throws IOException {
         int x = args.length >= 1 ? (Integer.parseInt(args[0])) : 100;
         int y = args.length == 2 ? (Integer.parseInt(args[1])) : 60;
         MazeGenerator maze = new MazeGenerator(x, y);
-        maze.solve(0, 0);
+        LinkedList<Coordinates> path = maze.solve(0, 0, 100, 60);
+
+        System.out.println(maze.getCharsToDraw("word", path, 20));
 
         MazeViewer mv = new MazeViewer(maze.getMaze(), maze.getResolvePath());
         mv.drawMaze();
