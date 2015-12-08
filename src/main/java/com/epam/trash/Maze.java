@@ -1,5 +1,3 @@
-package com.epam.trash;
-
 public class Maze {
     private int N;                 // dimension of maze
     private boolean[][] north;     // is there a wall to north of cell i, j
@@ -164,7 +162,7 @@ public class Maze {
         Maze maze = new Maze(N);
         StdDraw.show(0);
         maze.draw();
-        maze.solve();
+//        maze.solve();
     }
 
 }

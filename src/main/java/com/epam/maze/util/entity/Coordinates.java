@@ -1,4 +1,4 @@
-package com.epam;
+package com.epam.maze.util.entity;
 
 public class Coordinates {
     private int x;

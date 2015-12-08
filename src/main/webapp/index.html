@@ -4,81 +4,17 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
+    <script src="js/maze_renderer.js"></script>
 </head>
 <body>
-<button id="button" name="TEST">TEST</button>
-<canvas id="maze"></canvas>
+<div>
+    <button id="button" name="TEST">TEST</button>
+</div>
 
-<script>
-    var cellSize = 15;
+<div>
+    <canvas id="chars_maze"></canvas>
+    <canvas id="numbers_maze"></canvas>
+</div>
 
-    jQuery(document).ready(function ($) {
-        $("#button").click(function () {
-            getMazeData();
-        })
-    });
-
-    function getMazeData() {
-        $.getJSON("/test", function (data) {
-            console.log(data);
-            draw_maze(data);
-        });
-    }
-
-    function draw_maze(maze_data) {
-        var mazeMap = maze_data.maze;
-        var chars = maze_data.chars;
-        var width = mazeMap.length;
-        var height = mazeMap[0].length;
-
-        var mazeCanvas = document.getElementById("maze");
-        var ctx = mazeCanvas.getContext("2d");
-
-        mazeCanvas.width = width * cellSize;
-        mazeCanvas.height = height * cellSize;
-
-        ctx.strokeRect(0, 0, mazeCanvas.width, mazeCanvas.height);
-
-        ctx.beginPath();
-        ctx.lineWidth = 2;
-        ctx.lineCap="round";
-
-        for (var i = 0; i < mazeMap.length; i++) {
-            var row = mazeMap[i];
-            for (var j = 0; j < row.length; j++) {
-                var cx = i * cellSize;
-                var cy = j * cellSize;
-
-                if ((mazeMap[i][j] & 1) === 0) {
-                    ctx.moveTo(cx, cy);
-                    ctx.lineTo(cx + cellSize, cy);
-                }
-
-                if ((mazeMap[i][j] & 8) === 0) {
-                    ctx.moveTo(cx, cy);
-                    ctx.lineTo(cx, cy + cellSize);
-                }
-            }
-        }
-        ctx.closePath();
-        ctx.stroke();
-
-        for (i = 0; i < chars.length; i++) {
-            var char = chars[i].char;
-            var curX = chars[i].coordinates[0];
-            var curY = chars[i].coordinates[1];
-
-            cx = curX * cellSize + cellSize/2;
-            cy = curY * cellSize + cellSize/2;
-
-            ctx.font = "13px serif";
-            ctx.textAlign="center";
-            ctx.textBaseline = "middle";
-            ctx.fillText(char, cx, cy);
-        }
-
-    }
-
-</script>
 </body>
 </html>

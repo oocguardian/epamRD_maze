@@ -1,12 +1,16 @@
-package com.epam;
+package com.epam.maze.util;
+
+import com.epam.maze.util.entity.Coordinates;
 
 import javax.imageio.ImageIO;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Random;
 
 public class MazeViewer {
     public static final int CHARS_FREQUENCY_RATE = 30;
@@ -14,16 +18,15 @@ public class MazeViewer {
 
     private BufferedImage bufferedImage;
     private Graphics2D g2d;
-    private Rectangle cell;
 
     private final int x;
     private final int y;
     private final int[][] maze;
-    private LinkedList<Coordinates> resolvePath;
+    private List<Coordinates> resolvePath;
 
     private static final Random rand = new Random();
 
-    public MazeViewer(int[][] maze, LinkedList<Coordinates> resolvePath) {
+    public MazeViewer(int[][] maze, List<Coordinates> resolvePath) {
         this.x = maze.length;
         this.y = maze[0].length;
         this.maze = maze;
@@ -40,8 +43,6 @@ public class MazeViewer {
 
         g2d.setColor(Color.white);
         g2d.fillRect(0, 0, imageWidth, imageHeight);
-
-        cell = new Rectangle(IMAGE_SIZE_SCALE, IMAGE_SIZE_SCALE);
 
         g2d.translate(IMAGE_SIZE_SCALE, IMAGE_SIZE_SCALE);
     }
@@ -63,12 +64,6 @@ public class MazeViewer {
         }
     }
 
-    public void drawRect() {
-        g2d.setColor(Color.BLACK);
-        cell.setLocation(0, 0);
-        g2d.draw(cell);
-    }
-
     public void drawResolve() {
         for (Coordinates coordinates : resolvePath) {
             int curX = coordinates.getX() * IMAGE_SIZE_SCALE + IMAGE_SIZE_SCALE / 4;
@@ -87,8 +82,6 @@ public class MazeViewer {
 
         //distance between characters on the path
         int step = resolvePath.size() / (word.length() + 1);
-
-        Font font = scaleFont(word.substring(0, 1).toUpperCase(), cell, g2d);
 
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
         g2d.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -125,15 +118,6 @@ public class MazeViewer {
             }
         }
 
-    }
-
-    public Font scaleFont(String text, Rectangle rect, Graphics g) {
-        float fontSize = 15.0f;
-
-        Font font = g.getFont().deriveFont(fontSize);
-        int width = g.getFontMetrics(font).stringWidth(text);
-        fontSize = (rect.width / width) * fontSize;
-        return g.getFont().deriveFont(fontSize);
     }
 
     public void saveToFile(String path) throws IOException {

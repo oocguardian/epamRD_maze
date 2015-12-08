@@ -1,4 +1,4 @@
-package com.epam.maze.util;
+package com.epam.maze.util.entity;
 
 public class Cell {
     private final int cx;
