@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class JsonTest {
+public class MazeController {
     public static final int MAZE_X_SIZE = 60;
     public static final int MAZE_Y_SIZE = 60;
     public static final int CELL_SIZE = 12;
 
-    public static final String WORD_TO_SHOW = "word";
-    public static final int CHARS_DISTANCE = 25;
+    public static final String WORD_TO_SHOW = "TheHitchhikersGuidetotheGalaxy";
+    public static final int CHARS_DISTANCE = 20;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public @ResponseBody String getMazeData() throws IOException {

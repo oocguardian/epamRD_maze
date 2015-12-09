@@ -100,8 +100,6 @@ public class MazeViewer {
         int randomCharsCount = x * y / CHARS_FREQUENCY_RATE;
 
         for (int i = 0; i < randomCharsCount; i++) {
-            boolean doNotDraw = false;
-
             char c = (char) (65 + rand.nextInt(25));
             int cx = rand.nextInt(x);
             int cy = rand.nextInt(y);

@@ -15,8 +15,6 @@ public class PlaceholderGenerator {
 
         Map<Coordinates, String> charsToDraw = new LinkedHashMap<>();
 
-//        char[] chars = word.toCharArray();
-
         //distance between characters on the resolve path
         int step = resolve.size() / (shuffledWord.size() + 1);
 
@@ -27,13 +25,6 @@ public class PlaceholderGenerator {
             Coordinates coordinates = resolve.get(resolvePointIndex);
             charsToDraw.put(coordinates, shuffledWord.get(charKey));
         }
-
-//        for (char curChar : chars) {
-//            resolvePointIndex += step;
-//
-//            Coordinates coordinates = resolve.get(resolvePointIndex);
-//            charsToDraw.put(coordinates, String.valueOf(curChar).toUpperCase());
-//        }
 
         //getting counter of fake chars
         int randomCharsCount = wx * wy / distance;
